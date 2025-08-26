@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quizzzz</title>
+</head>
+<body style="background: #e8f5e9; min-height: 100vh; margin: 0; font-family: Arial, sans-serif;">
+    <div id="quiz-outer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
+        <div id="greeting" style="display:none; font-size: 2em; color: #388e3c; font-weight: bold; margin-bottom: 24px;"></div>
+        <div id="quiz-container" style="max-width: 480px; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 32px 24px; text-align: center; width: 100%;">
+            <div id="name-section">
+                <h2>Bem-vindo ao Quiz Sustentável!</h2>
+                <form id="nameForm">
+                    <label for="username" style="font-size: 1.1em; color: #388e3c;">Digite seu nome para começar:</label><br>
+                    <input type="text" id="username" name="username" required placeholder="Seu nome" style="padding: 12px; font-size: 1em; border-radius: 8px; border: 1px solid #bdbdbd; margin: 16px 0; width: 80%; max-width: 260px;">
+                    <br>
+                    <button type="submit" style="background: #43a047; color: #fff; border: none; border-radius: 8px; font-size: 1.2em; padding: 12px 32px; cursor: pointer;">Começar</button>
+                </form>
+            </div>
+            <div id="question-section" style="display:none;">
+                <div id="question-text" style="margin-bottom: 16px; font-size: 1.1em;"></div>
+                <form id="answerForm"></form>
+                <div id="feedback" style="margin-top: 18px; font-size: 1em;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Primeira pergunta de múltipla escolha
+        const primeiraPergunta = {
+            texto: "Qual destas ações mais contribui para uma cidade sustentável?",
+            opcoes: [
+                "Separar o lixo reciclável do orgânico",
+                "Usar sacolas plásticas descartáveis sempre que possível",
+                "Deixar luzes acesas em ambientes vazios",
+                "Desperdiçar água ao escovar os dentes"
+            ],
+            correta: 0 // índice da opção correta
+        };
+
+        const nameForm = document.getElementById('nameForm');
+        const nameSection = document.getElementById('name-section');
+        const questionSection = document.getElementById('question-section');
+    const greeting = document.getElementById('greeting');
+        const questionText = document.getElementById('question-text');
+        const answerForm = document.getElementById('answerForm');
+        const feedback = document.getElementById('feedback');
+
+        // Substituir campo de texto por múltipla escolha
+        function mostrarPerguntaMultiplaEscolha(pergunta) {
+            questionText.textContent = pergunta.texto;
+            answerForm.innerHTML = '';
+            pergunta.opcoes.forEach((opcao, idx) => {
+                const label = document.createElement('label');
+                label.style.display = 'block';
+                label.style.margin = '8px 0';
+                label.style.cursor = 'pointer';
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'answer';
+                input.value = idx;
+                input.required = true;
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(' ' + opcao));
+                answerForm.appendChild(label);
+            });
+            const btn = document.createElement('button');
+            btn.type = 'submit';
+            btn.textContent = 'Responder';
+            btn.style.background = '#388e3c';
+            btn.style.color = '#fff';
+            btn.style.border = 'none';
+            btn.style.borderRadius = '8px';
+            btn.style.fontSize = '1.1em';
+            btn.style.padding = '10px 28px';
+            btn.style.marginTop = '16px';
+            btn.style.cursor = 'pointer';
+            answerForm.appendChild(btn);
+        }
+
+        nameForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            if (username) {
+                nameSection.style.display = 'none';
+                questionSection.style.display = 'block';
+                greeting.textContent = `Olá, ${username}!`;
+                greeting.style.display = 'block';
+                mostrarPerguntaMultiplaEscolha(primeiraPergunta);
+                feedback.innerHTML = '';
+            }
+        });
+
+        answerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const selecionada = answerForm.querySelector('input[name="answer"]:checked');
+            if (selecionada) {
+                const idx = parseInt(selecionada.value);
+                if (idx === primeiraPergunta.correta) {
+                    feedback.innerHTML = '<span style="color:green;">✅ Correto! Separar o lixo reciclável é fundamental para a sustentabilidade urbana.</span>';
+                } else {
+                    feedback.innerHTML = '<span style="color:red;">❌ Resposta incorreta. O ideal é separar o lixo reciclável do orgânico para ajudar o meio ambiente.</span>';
+                }
+                // Desabilita opções após resposta
+                answerForm.querySelectorAll('input[name="answer"]').forEach(inp => inp.disabled = true);
+                answerForm.querySelector('button[type="submit"]').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
